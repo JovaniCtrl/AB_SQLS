@@ -1,0 +1,12 @@
+
+@api = http://localhost:3000
+
+GET {{api}}/var
+
+###
+POST {{api}}/ins
+
+Content-Type: application/json
+{
+    "state":true
+}
