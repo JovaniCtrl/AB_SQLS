@@ -3,7 +3,7 @@ import { insertData } from "./controlador/tags_ctrl.js";
 
 const PLC = new Controller();
 
-PLC.subscribe(new Tag("BOTON", "MainProgram"));
+PLC.subscribe(new Tag("Motor", "MainProgram"));
 
 export function selladora() {
   PLC.connect("192.168.100.101", 0).then(async () => {
