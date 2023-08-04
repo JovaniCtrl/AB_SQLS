@@ -1,3 +1,4 @@
+
 import sql from "mssql";
 
 const dbSettings = {
@@ -11,11 +12,8 @@ const dbSettings = {
   },
 };
 
-export async function getConnectinon() {
-/*   const pool = await sql.connect(dbSettings);
-  const result = await pool.request().query('SELECT * FROM TestTable');
-  console.log(result); */
 
+export async function getConnectinon() {
   try{
     const pool = await sql.connect(dbSettings)
     return pool;
@@ -23,4 +21,3 @@ export async function getConnectinon() {
     console.log(err)
   }
 }
-

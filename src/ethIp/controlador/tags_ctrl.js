@@ -1,48 +1,47 @@
-import moment from "moment/moment.js";
 import { getConnectinon } from "../database/connection.js";
 import sql from "mssql";
-import "moment";
 
 export const insertData = async (state) => {
   const pool = await getConnectinon();
-  const currentDate = new Date()
-  const end = currentDate.toISOString().slice(0, 19).replace("T", " ");
-  console.log(end)
 
   try {
-    const pre = await pool
+    const oldData = await pool
       .request()
       .query(
-        `SELECT TOP 1 endDate FROM test_RuningEvent ORDER BY startDate DESC `
+        `SELECT TOP 1 state,endDate FROM test_RuningEvent ORDER BY startDate DESC `
       );
-    const start = pre.recordset
-      .pop()
-      .endDate.toISOString()
-      .slice(0, 19)
-      .replace("T", " ");
-        console.log(start)
+    const pre = oldData.recordset.pop();
+    const start = pre.endDate.toISOString().slice(0, 19).replace("T", " ");
 
-
-    const momStart = moment(start);
-    const momEnd = moment(end);
-    const duration = momStart.diff(momEnd, "minutes");
-    //  console.log(duration);
+    const preState = Number(pre.state);
+    
+     const diff = await pool.request().query(`WITH tabx(stx,etx) AS (
+        SELECT (SELECT TOP 1 endDate FROM test_RuningEvent ORDER BY startDate DESC) AS startDate, CURRENT_TIMESTAMP AS endDate)  SELECT DATEDIFF(MINUTE, stx, etx) AS difference FROM tabx
+        `);
+    const duration = diff.recordset.pop().difference;
+    //console.log(duration);
 
     var st = 3;
     if (state == "true") st = 1;
-    else st = 0 
-
-    console.log(st);
-    const result = await pool
+    else st = 0;
+    
+    if(preState !=  st){
+      const result = await pool
       .request()
       .input("st", sql.Int, st)
-      .input("end", sql.DateTime, end)
-      .input("start", sql.DateTime, start)
+      .input("start", start)
       .input("dur", sql.VarChar, duration.toString())
       .query(
-        "INSERT INTO test_RuningEvent (state, startDate,endDate, duration) VALUES (@st,@start,@end, @dur)"
+        "INSERT INTO test_RuningEvent (state, startDate, duration) VALUES (@st,@start, @dur)"
       );
+
+    console.log("New Register Ok")
+    }
+    
   } catch (error) {
     console.log(error);
+    console.log("New Register NG");
   }
 };
+
+

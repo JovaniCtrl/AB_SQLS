@@ -3,25 +3,12 @@ import { insertData } from "./controlador/tags_ctrl.js";
 
 const PLC = new Controller();
 
-/* const RunMotorTag = new Tag("Motor", "MainProgram");
-
-export function selladora() {
-  PLC.connect("192.168.100.101", 0).then(async () => {
-    await PLC.readTag(RunMotorTag);
-    console.log(RunMotorTag.value);
-    insertData(RunMotorTag.value.toString());
-  });
-}
- */
-
-PLC.subscribe(new Tag("Motor", "MainProgram"));
+PLC.subscribe(new Tag("BOTON", "MainProgram"));
 
 export function selladora() {
   PLC.connect("192.168.100.101", 0).then(async () => {
     PLC.scan_rate = 50;
     PLC.scan();
-   
-    
   });
 }
 
