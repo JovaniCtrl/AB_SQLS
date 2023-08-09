@@ -1,17 +1,22 @@
 import { Tag, Controller, TagGroup } from "ethernet-ip";
 import { insertData } from "./controlador/tags_ctrl.js";
 
+var txt = new Set()
+
 const PLC = new Controller();
 const PLC_Tags = new TagGroup();
 
-PLC_Tags.add(new Tag("BOTON", "MainProgram"));
-PLC_Tags.add(new Tag("F_1", "MainProgram"));
-//PLC.subscribe() */
+const BotonTag = new Tag("BOTON", "MainProgram")
+const F1Tag = new Tag("F_1", "MainProgram")
+const F2Tag = new Tag("F_2", "MainProgram")
 
-//PLC.subscribe(PLC_Tags);
+PLC_Tags.add(BotonTag);
+PLC_Tags.add(F1Tag);
+PLC_Tags.add(F2Tag);
 
-PLC.subscribe(new Tag("BOTON", "MainProgram"));
-PLC.subscribe(new Tag("F_1", "MainProgram"));
+PLC.subscribe(BotonTag);
+PLC.subscribe(F1Tag);
+PLC.subscribe(F2Tag);
 
 export function selladora() {
   PLC.connect("192.168.100.101", 0).then(async () => {
@@ -22,13 +27,15 @@ export function selladora() {
 
 async function RG_Tags() {
   await PLC.readTagGroup(PLC_Tags);
+  
   PLC_Tags.forEach((tag) => {
-   var txt = {
-      name: tag.name,
-      value: tag.value
-    }
-    console.table(txt);
+  txt.add({
+    name: tag.name,
+    value: tag.value
+  })  
   });
+  console.log(txt)
+  
 }
 
 PLC.forEach((tag) => {
