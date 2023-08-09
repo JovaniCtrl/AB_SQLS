@@ -14,7 +14,7 @@ function connected(err) {
     process.exit();
   }
   conn.setTranslationCB(tagLookup);
-  conn.addItems("VarBool");
+  conn.addItems(["Var1", "Var2", "Var3"]);
   conn.readAllItems(valuesReady);
 }
 
@@ -22,10 +22,9 @@ function valuesReady(anythingBad, values) {
   if (anythingBad) {
     console.log("SOMETHING WENT WRONG READING VALUES!!!!");
   }
-  /*  if (preVal != values.VarBool)  {
-        preVal = values.VarBool 
-        console.log(values.VarBool)
-    }  */
+  if (values.Var1 && values.Var2 && values.Var3 ) {
+    console.log("Insert Data!");
+  }
   console.log(values);
   doneReading = true;
   if (doneWriting) {
@@ -36,13 +35,11 @@ function valuesReady(anythingBad, values) {
 function tagLookup(tag) {
   switch (tag) {
     case "Var1":
-      return "B16:0/0"; //Bool
+      return "B3:0/0"; //Bool
     case "Var2":
-      return "B16:0/8";
+      return "B3:0/2";
     case "Var3":
-      return "B16:0/2";
-    case "Var4":
-      return "N10:10";
+      return "B3:0/4";
     default:
       return undefined;
   }
